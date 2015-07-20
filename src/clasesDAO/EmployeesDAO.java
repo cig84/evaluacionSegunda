@@ -1,18 +1,16 @@
 package clasesDAO;
 
 import java.util.ArrayList;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import interfaces.InterfazRecuperable;
-import dataBaseHR.Departments;
 import dataBaseHR.Employees;
 
 /**
  * 
  * @author Francesco
  * En esta clase se definen los metodos para acceder a la base de datos. Esta clase implementa la
- * interfaz "interfazEmployeeDAO y extiende la super clase "SuperClaseDAO".
+ * interfaz "interfazRecuperable y extiende la super clase "SuperClaseDAO".
  *
  */
 
@@ -43,6 +41,7 @@ public class EmployeesDAO extends SuperClaseDAO implements InterfazRecuperable {
 	}
 		
 	public ArrayList<Employees> leerEmpleados(String id) {
+		
 		ArrayList<Employees> emps = (ArrayList<Employees>) getSession().createSQLQuery("Select * from Employees where department_id = " + id).addEntity(Employees.class).list();
 		return emps;
 	}

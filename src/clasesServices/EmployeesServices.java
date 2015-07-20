@@ -1,13 +1,9 @@
 package clasesServices;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
+import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import clasesDAO.EmployeesDAO;
-import clasesDAO.SessionManager;
 import dataBaseHR.Employees;
 
 /**
@@ -23,126 +19,26 @@ import dataBaseHR.Employees;
  * cuando el metodo llamado haya terminado su ejecución, con o sin fallos.
  *
  */
+
 public class EmployeesServices {
 	
-	private static EmployeesDAO empDAO;
+	private static EmployeesDAO empDAO = null;
+	private final static Logger log = LogManager.getRootLogger();
 	
 	public EmployeesServices() {
-		empDAO = new EmployeesDAO();
-	}
-	
-	public boolean incrementarSalario(){
-		/*
-		 * Este método incrementa el salario de todos los dependientes en la tabla Employees
-		 * en la base de datos. Para hacer esto después de haber configurado la connección
-		 * con la base de datos, llama al metodo obtenerEmpleados() del objeto empDAO, almacena el
-		 * resultado en una lista de empleados y actualiza el salario de los empleados llamando el 
-		 * metodo actualizarSalario() de la propia clase.
-		 */
-		boolean ok = false;
-		Session session = null;
-		Transaction trans = null;
-		List<Employees> listaEmp = null;
-		try {
-			session = SessionManager.obtenerSession();
-			trans = session.beginTransaction();
-			empDAO.setSession(session);
-//			listaEmp = empDAO.obtenerEmpleados();
-			mostrarEmpleados(listaEmp);
-			actualizarSalario(listaEmp);
-			mostrarEmpleados(listaEmp);
-			trans.commit();
-			ok = true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			trans.rollback();
-		}
-		finally {
-			SessionManager.cerrar(session);
-
-		}
-		return ok;
-	}
-	
-	public List<Employees> obtenerEmpMejorPagados(){
-		/*
-		 * Este metodo devuelve una lista de empleados que almacena lo que devuelve el método 
-		 * empleadosMejorPagados() del objeto empDAO. El resultado será la lista de los empleados
-		 * mejor pagados por cada departamento.
-		 */
-		Session session = null;
-		Transaction trans = null;
-		List<Employees> listaEmp = null;
-		try {
-			session = SessionManager.obtenerSession();
-			trans = session.beginTransaction();
-			empDAO.setSession(session);
-//			listaEmp = empDAO.empleadosMejorPagados();
-			trans.commit();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			trans.rollback();
-		}
-		finally {
-			SessionManager.cerrar(session);
-
-		}
-		return listaEmp;
-	}
-	
-	public List<Employees> obtenerEmplPorDept(String id) {
-		/*
-		 * Este método devuelve una lista de empleados que almacena lo que devuelve el método
-		 * empleadosPorDept() del objeto emp.DAO. El resultado será la lista de los empleados
-		 * que pertenecen a un dado departamento. El "id" del departamento será el parametro que
-		 * pasaremos al método empleadosPorDept.
-		 */
-		Session session = null;
-		Transaction trans = null;
-		List<Employees> listaEmp = null;
-		try {
-			session = SessionManager.obtenerSession();
-			trans = session.beginTransaction();
-			empDAO.setSession(session);
-			listaEmp = empDAO.leerEmpleados(id);
-			trans.commit();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			trans.rollback();
-		}
-		finally {
-			SessionManager.cerrar(session);
-	
-		}
-		return listaEmp;
-	}
-	
-	private void actualizarSalario(List<Employees> listaEmpleados) { // no devuelve nada porqué la lista se actualiza
-		/*
-		 * Este método recive la lista de empleados a los cuales hay que incrementar el salario.
-		 * Dado que el salario almacenado en la base de datos es de tipo BigDecimal, para tener un valor
-		 * mas preciso, se convierte en un int y se actualiza. Después de convertirlo otra vez en un
-		 * BigDecimal, se actualiza el valor de cada objeto de la lista.
-		 */
-		for(Employees emp : listaEmpleados) {
-			int salarioAct = emp.getSalary().multiply(new BigDecimal(1.2)).intValue();
-			BigDecimal salarioBig = new BigDecimal(salarioAct);
-			emp.setSalary(salarioBig);
-			
-		}
 		
+		log.trace("se crea el objeto EmployeesDAO");
+		this.empDAO = new EmployeesDAO();
 	}
 	
-	public void mostrarEmpleados(List<Employees> listaEmpleados) {
-		/*
-		 * Este método recorre una lista y imprime el valor de los objetos almacenados en la lista.
-		 */
-		for(Employees emp : listaEmpleados) {
-			System.out.println(emp.toString());
-		}
+	
+	public ArrayList<Employees> obtenerEmplPorDept(String id) {
+
+		log.trace("entra en el método obtenerEmplPorDept");
+		ArrayList<Employees> listaEmpleados = new ArrayList<Employees>();
+		listaEmpleados.addAll(this.empDAO.obtenerEmpleadosporId(id));
+		return listaEmpleados;
 	}
+	
 
 }

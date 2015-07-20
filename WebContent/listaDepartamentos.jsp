@@ -9,6 +9,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Lista de Departamentos</title>
+<link rel="stylesheet" href="myCSS.css">
 </head>
 <body>
 <%! Iterator<Departments> it = null;

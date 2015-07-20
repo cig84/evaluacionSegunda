@@ -2,16 +2,20 @@ package clasesDAO;
 
 import java.util.ArrayList;
 import dataBaseHR.Departments;
-import dataBaseHR.Employees;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import interfaces.InterfazRecuperable;
+
+/**
+ * 
+ * @author Francesco
+ * En esta clase se definen los metodos para acceder a la base de datos. Esta clase implementa la
+ * interfaz "interfazRecuperable y extiende la super clase "SuperClaseDAO".
+ *
+ */
 
 public class DepartmentsDAO extends SuperClaseDAO implements InterfazRecuperable{
 	
-	
-
 	public ArrayList<Departments> obtenerDepartamentos() {
 		
 		DepartmentsDAO deptDAO = new DepartmentsDAO();
@@ -22,7 +26,7 @@ public class DepartmentsDAO extends SuperClaseDAO implements InterfazRecuperable
 			session = SessionManager.obtenerSession();
 			trans = session.beginTransaction();
 			deptDAO.setSession(session);
-			depts = deptDAO.read();
+			depts = deptDAO.listaDepartamentos();
 			trans.commit();
 		}
 		catch(Exception e) {
@@ -36,7 +40,7 @@ public class DepartmentsDAO extends SuperClaseDAO implements InterfazRecuperable
 		return depts;
 	}
 		
-	public ArrayList<Departments> read() {
+	public ArrayList<Departments> listaDepartamentos() {
 		
 		ArrayList<Departments> depts = (ArrayList<Departments>) getSession().createSQLQuery("Select * from departments").addEntity(Departments.class).list();
 		return depts;
